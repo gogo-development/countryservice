@@ -12,7 +12,6 @@ import com.gogodevelopment.countryservice.entity.Country;
 import com.gogodevelopment.countryservice.entity.Currency;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 public class CountryDeserializer extends StdDeserializer<Country> {
@@ -33,17 +32,17 @@ public class CountryDeserializer extends StdDeserializer<Country> {
         JsonNode node = jp.getCodec().readTree(jp);
         ObjectMapper mapper = new ObjectMapper();
 
-        // primitives
+        // примитивы
         result.setName(node.get("name").asText());
         result.setPopulation(node.get("population").asLong());
         result.setFlag(node.get("flag").asText());
 
-        // fully parsed objects
+        // полностью распарсены
         ObjectReader currencyReader = mapper.readerFor(new TypeReference<List<Currency>>() {});
         List<Currency> currencyList = currencyReader.readValue(node.get("currencies"));
         result.setCurrencies(currencyList);
 
-        // persisted as plain JSON
+        // хранятся в виде текста
         result.setTopLevelDomain(node.findPath("topLevelDomain").toString());
         result.setLatlng(node.findPath("latlng").toString());
         result.setLanguages(node.findPath("languages").toString());

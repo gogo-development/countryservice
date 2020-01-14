@@ -1,17 +1,14 @@
 package com.gogodevelopment.countryservice.controller;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gogodevelopment.countryservice.entity.Country;
 import com.gogodevelopment.countryservice.filter.CountryFilter;
 import com.gogodevelopment.countryservice.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,7 +79,7 @@ public class CountryController {
 
         List<Country> countryList = new ArrayList<>();
 
-        // JsonParser used here to prevent loading whole JSON source in memory
+        // JsonParser использован чтобы не загружать весь JSON-файл
         try (InputStream inputStream = url.openStream();
                 JsonParser jsonParser = objectMapper.getFactory().createParser(inputStream)) {
 

@@ -1,0 +1,32 @@
+<html
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Country filter</title>
+    <link rel="stylesheet" th:href="@{/css/myStyle.css}"/>
+</head>
+<body>
+<H1>Выберите условия поиска</H1>
+
+<form action="#" th:action="@{/getByFilter}" th:object="${countryFilter}" method="post">
+    <table>
+        <tr>
+            <td>Наименование</td>
+            <td>
+                <input type="text" th:field="*{name}">
+            </td>
+        </tr>
+        <tr>
+            <td>Домен</td>
+            <td>
+                <input type="text" th:field="*{domain}">
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Получить список стран в формате JSON">
+</form>
+<br>
+<form action="#" th:action="@{fireRefreshDatasource}" method="get">
+    <input type="submit" value="Обновить данные">
+</form>
+</body>
+</html>

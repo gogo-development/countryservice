@@ -1,14 +1,17 @@
 package com.gogodevelopment.countryservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
+@Table(name = "currency")
 public class Currency {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonIgnore
     private int id;
 
     @Column(name = "code")
@@ -19,11 +22,6 @@ public class Currency {
 
     @Column(name = "symbol")
     private String symbol;
-
-    @ManyToMany(mappedBy = "currencyList",
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<Country> countryList;
 
     public Currency() {
     }
@@ -60,28 +58,13 @@ public class Currency {
         this.symbol = symbol;
     }
 
-    public List<Country> getCountryList() {
-        return countryList;
-    }
-
-    public void setCountryList(List<Country> countryList) {
-        this.countryList = countryList;
-    }
-
     @Override
     public String toString() {
         String result = "Currency{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", name='" + name + '\'' +
-                ", symbol='" + symbol + '\''
-//                +
-//                ", countryList size="
-                ;
-//
-//        if (countryList !=null)
-//            result = result + countryList.size() + '}';
-//        else result += "0}";
+                ", symbol='" + symbol + '\'';
 
         return result;
     }

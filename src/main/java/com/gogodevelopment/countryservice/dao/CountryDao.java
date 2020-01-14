@@ -10,4 +10,6 @@ public interface CountryDao {
     void saveOrUpdate(Country country);
 
     List<Country> getFilteredList(CountryFilter countryFilter);
+
+    void clearTables();
 }

@@ -31,14 +31,22 @@ public class CountryDaoImpl implements CountryDao {
     public List<Country> getFilteredList(CountryFilter countryFilter) {
 
         Session session = entityManager.unwrap(Session.class);
+
         Query<Country> query = session.createQuery(
-                "FROM Country WHERE REGEXP_LIKE(name, :name, 'c')" +
-                "LOWER(name) LIKE :name AND" +
+                "FROM Country WHERE LOWER(name) LIKE :name AND" +
                 " topLevelDomain LIKE :domain", Country.class);
-        query.setParameter("name", "'.*" + countryFilter.getName() + ".*'");
-        query.setParameter("domain", countryFilter.getDomain());
-        //TODO
+        query.setParameter("name", "%" + countryFilter.getName() + "%");
+        query.setParameter("domain", "%" + countryFilter.getDomain() + "%");
 
         return query.getResultList();
+    }
+
+    @Override
+    public void clearTables() {
+
+        Session session = entityManager.unwrap(Session.class);
+
+        session.createQuery("DELETE FROM Country").executeUpdate();
+        session.createQuery("DELETE FROM Currency").executeUpdate();
     }
 }

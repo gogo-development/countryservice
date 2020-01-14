@@ -32,4 +32,10 @@ public class CountryServiceImpl implements CountryService {
     public List<Country> getFilteredList(CountryFilter countryFilter) {
         return countryDao.getFilteredList(countryFilter);
     }
+
+    @Override
+    @Transactional
+    public void clearTables() {
+        countryDao.clearTables();
+    }
 }

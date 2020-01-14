@@ -1,21 +1,25 @@
 package com.gogodevelopment.countryservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gogodevelopment.countryservice.serializer.CountryDeserializer;
+import com.gogodevelopment.countryservice.serializer.CountrySerializer;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "country")
 @JsonDeserialize(using = CountryDeserializer.class)
+@JsonSerialize(using = CountrySerializer.class)
 public class Country {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonIgnore
     private int id;
 
     @Column(name = "name")
@@ -25,7 +29,7 @@ public class Country {
     private String topLevelDomain;
 
     @Column(name = "population")
-    private BigInteger population;
+    private long population;
 
     @Column(name = "latlng")
     private String latlng;
@@ -42,12 +46,12 @@ public class Country {
     @Column(name = "flag")
     private String flag;
 
-    @ManyToMany(fetch = FetchType.EAGER,
+    @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "country_currency",
             joinColumns = @JoinColumn(name = "country_id"),
             inverseJoinColumns = @JoinColumn(name = "currency_id"))
-    private List<Currency> currencyList;
+    private List<Currency> currencies;
 
     public Country() {
     }
@@ -76,11 +80,11 @@ public class Country {
         this.topLevelDomain = topLevelDomain;
     }
 
-    public BigInteger getPopulation() {
+    public long getPopulation() {
         return population;
     }
 
-    public void setPopulation(BigInteger population) {
+    public void setPopulation(long population) {
         this.population = population;
     }
 
@@ -124,12 +128,12 @@ public class Country {
         this.flag = flag;
     }
 
-    public List<Currency> getCurrencyList() {
-        return currencyList;
+    public List<Currency> getCurrencies() {
+        return currencies;
     }
 
-    public void setCurrencyList(List<Currency> currencyList) {
-        this.currencyList = currencyList;
+    public void setCurrencies(List<Currency> currencies) {
+        this.currencies = currencies;
     }
 
     @Override
@@ -144,7 +148,7 @@ public class Country {
                 ", translations='" + translations + '\'' +
                 ", regionalBlocs='" + regionalBlocs + '\'' +
                 ", flag='" + flag + '\'' +
-                ", currencyList=" + currencyList.stream().map(Object::toString).collect(Collectors.joining(", ")) +
+                ", currencies=" + currencies.stream().map(Object::toString).collect(Collectors.joining(", ")) +
                 '}';
     }
 }

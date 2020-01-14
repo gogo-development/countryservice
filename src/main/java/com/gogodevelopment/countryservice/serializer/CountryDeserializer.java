@@ -35,13 +35,13 @@ public class CountryDeserializer extends StdDeserializer<Country> {
 
         // primitives
         result.setName(node.get("name").asText());
-        result.setPopulation(new BigInteger(node.get("population").asText()));
+        result.setPopulation(node.get("population").asLong());
         result.setFlag(node.get("flag").asText());
 
         // fully parsed objects
         ObjectReader currencyReader = mapper.readerFor(new TypeReference<List<Currency>>() {});
         List<Currency> currencyList = currencyReader.readValue(node.get("currencies"));
-        result.setCurrencyList(currencyList);
+        result.setCurrencies(currencyList);
 
         // persisted as plain JSON
         result.setTopLevelDomain(node.findPath("topLevelDomain").toString());
@@ -49,8 +49,6 @@ public class CountryDeserializer extends StdDeserializer<Country> {
         result.setLanguages(node.findPath("languages").toString());
         result.setTranslations(node.findPath("translations").toString());
         result.setRegionalBlocs(node.findPath("regionalBlocs").toString());
-//TODO
-        System.out.println("CountryDeserializer.deserialize(): " + result);
 
         return result;
     }

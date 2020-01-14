@@ -10,4 +10,6 @@ public interface CountryService {
     void saveList(List<Country> countryList);
 
     List<Country> getFilteredList(CountryFilter countryFilter);
+
+    void clearTables();
 }

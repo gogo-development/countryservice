@@ -1,18 +1,23 @@
 package com.gogodevelopment.countryservice.controller;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gogodevelopment.countryservice.entity.Country;
 import com.gogodevelopment.countryservice.filter.CountryFilter;
 import com.gogodevelopment.countryservice.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
@@ -22,12 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class CountryRequestController {
+public class CountryController {
 
     private final CountryService countryService;
 
     @Autowired
-    public CountryRequestController(CountryService countryService) {
+    public CountryController(CountryService countryService) {
         this.countryService = countryService;
     }
 
@@ -39,12 +44,12 @@ public class CountryRequestController {
     @GetMapping("/filter")
     public String showCountryRequestForm(Model model) {
 
-        model.addAttribute("countryForm", new CountryFilter());
+        model.addAttribute("countryFilter", new CountryFilter());
 
         return "countryRequestForm";
     }
 
-    @GetMapping("/fireRefreshDataSource")
+    @GetMapping("/fireRefreshDatasource")
     public String fireRefreshDataSource () {
 
         refreshDataSource();
@@ -52,14 +57,16 @@ public class CountryRequestController {
         return "redirect:/filter";
     }
 
-    @PostMapping("/getByFilter")
+    @PostMapping(path = "/getByFilter", produces = "application/json; charset=UTF-8")
+    @ResponseBody
     public List<Country> getFilteredList (@ModelAttribute CountryFilter countryFilter) {
 
         return countryService.getFilteredList(countryFilter);
     }
 
     private void refreshDataSource() {
-        //TODO: drop table
+
+        countryService.clearTables();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -75,7 +82,7 @@ public class CountryRequestController {
 
         List<Country> countryList = new ArrayList<>();
 
-        // JsonParser used to prevent loading whole JSON source in memory
+        // JsonParser used here to prevent loading whole JSON source in memory
         try (InputStream inputStream = url.openStream();
                 JsonParser jsonParser = objectMapper.getFactory().createParser(inputStream)) {
 
@@ -92,9 +99,6 @@ public class CountryRequestController {
             e.printStackTrace();
         }
 
-        // TODO
-        System.out.println("countryList.size(): " + countryList.size());
         countryService.saveList(countryList);
     }
-
 }
